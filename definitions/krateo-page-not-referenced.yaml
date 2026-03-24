@@ -25,7 +25,7 @@ spec:
   - type: custom 
     required: true
     shared: false
-    resouces:
+    resources:
       from: navmenuitem
       to: page
       criteria:
