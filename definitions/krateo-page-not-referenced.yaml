@@ -1,5 +1,5 @@
 version: kubepattern.dev/v1
-kind: Pattern
+kind: PatternAsCode
 metadata:
   name: krateo-page-not-referenced
   displayName: Page Not Referenced
