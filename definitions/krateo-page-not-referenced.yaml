@@ -1,0 +1,38 @@
+version: kubepattern.dev/v1
+kind: Pattern
+metadata:
+  name: krateo-page-not-referenced
+  displayName: Page Not Referenced
+  patternType: ReferencesKrateo
+  severity: MEDIUM
+spec:
+  message: Page {{page.name}} in namespace {{page.namespace}} is not referenced by any widget (NavMenuItem).
+  resources:
+  - id: page
+    kind: Page
+    apiVersion: my-api
+    # filters: // matchAll, matchAny, matchNone
+  - id: navmenuitem
+    kind: NavMenuItem
+    apiVersion: my-api
+    filters:
+      matchNone:
+      - key: ".metadata.namespace"
+        operator: EQUALS
+        values:
+        - krateo-system
+  relationships:
+  - type: custom 
+    required: true
+    shared: false
+    resouces:
+      from: navmenuitem
+      to: page
+      criteria:
+      - from: spec.resourcesRefs.items[*].name
+        to: metadata.name
+        operator: EQUALS
+      - from: spec.resourcesRefs.items[*].namespace
+        to: metadata.namespace
+        operator: EQUALS
+  minRequired: 1
