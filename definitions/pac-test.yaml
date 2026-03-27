@@ -1,0 +1,19 @@
+apiVersion: kubepattern.dev/v1
+kind: Pattern
+metadata:
+  name: pac-test
+spec:
+  displayName: Pattern as Code Test KubePattern
+  category: Architecture
+  severity: HIGH
+  message: "Pod {{target.metadata.name}} in namespace {{target.metadata.namespace}} has Pattern Test label."
+
+  target:
+    kind: Pod
+    apiVersion: v1
+    filters:
+      matchAll:
+        - path: "metadata.labels.kubepattern"
+          operator: EQUALS
+          values:
+            - test
