@@ -1,0 +1,19 @@
+apiVersion: kubepattern.dev/v1
+kind: Pattern
+metadata:
+  name: missing-resource-limits
+spec:
+  displayName: "Missing Resource Limits"
+  category: "Reliability"
+  severity: "HIGH"
+  message: "Il Deployment {{target.metadata.name}} nel namespace {{target.metadata.namespace}} ha container senza i limiti di risorse (limits) definiti."
+  
+  target:
+    kind: Deployment
+    apiVersion: apps/v1
+    plural: deployments
+    filters:
+      matchNone:
+        - path: "spec.template.spec.containers[*].resources.limits"
+          operator: EXISTS
+          values: []

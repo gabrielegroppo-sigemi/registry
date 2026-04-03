@@ -1,0 +1,19 @@
+apiVersion: kubepattern.dev/v1
+kind: Pattern
+metadata:
+  name: missing-liveness-probe
+spec:
+  displayName: "Missing Liveness Probe"
+  category: "Reliability"
+  severity: "HIGH"
+  message: "Il Deployment {{target.metadata.name}} (ns: {{target.metadata.namespace}}) non definisce una livenessProbe. K8s non saprà quando riavviare l'app in caso di blocco."
+  
+  target:
+    kind: Deployment
+    apiVersion: apps/v1
+    plural: deployments
+    filters:
+      matchNone:
+        - path: "spec.template.spec.containers[*].livenessProbe"
+          operator: EXISTS
+          values: []

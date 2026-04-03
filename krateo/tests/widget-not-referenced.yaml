@@ -1,0 +1,96 @@
+apiVersion: kubepattern.dev/v1
+kind: Pattern
+metadata:
+  name: orphaned-panel
+spec:
+  displayName: "Panel Not Referenced (Orphaned)"
+  category: "Architecture"
+  severity: "HIGH"
+  message: "The Panel {{target.metadata.name}} in namespace {{target.metadata.namespace}} is orphaned: it is not managed by any parent widget (Page or Column)."
+  
+  target:
+    kind: Panel
+    apiVersion: widgets.templates.krateo.io/v1beta1
+    plural: panels
+
+  # Resources that can reference this Panel as a dependency (i.e., potential parents)
+  dependencies:
+    - id: page
+      kind: Page
+      apiVersion: widgets.templates.krateo.io/v1beta1
+      plural: pages
+    - id: column
+      kind: Column
+      apiVersion: widgets.templates.krateo.io/v1beta1
+      plural: columns
+
+  relationships:
+    # if at least one Page or Column references this Panel, then it's not orphaned
+    matchNone:
+      - with: page
+        type: custom
+        criteria:
+          - targetPath: "metadata.name"
+            dependencyPath: "spec.resourcesRefs.items[*].name"
+            operator: EQUALS
+          - targetPath: "metadata.namespace"
+            dependencyPath: "spec.resourcesRefs.items[*].namespace"
+            operator: EQUALS
+      - with: column
+        type: custom
+        criteria:
+          - targetPath: "metadata.name"
+            dependencyPath: "spec.resourcesRefs.items[*].name"
+            operator: EQUALS
+          - targetPath: "metadata.namespace"
+            dependencyPath: "spec.resourcesRefs.items[*].namespace"
+            operator: EQUALS
+
+---
+apiVersion: kubepattern.dev/v1
+kind: Pattern
+metadata:
+  name: orphaned-button
+spec:
+  displayName: "Button Not Referenced (Orphaned)"
+  category: "Architecture"
+  severity: "MEDIUM"
+  message: "The Button {{target.metadata.name}} in namespace {{target.metadata.namespace}} is orphaned: it is not managed by any parent widget (Page or Column)."
+  
+  target:
+    kind: Button
+    apiVersion: widgets.templates.krateo.io/v1beta1
+    plural: buttons
+
+  # Resources that can reference this Button as a dependency (i.e., potential parents)
+  dependencies:
+    - id: panel
+      kind: Panel
+      apiVersion: widgets.templates.krateo.io/v1beta1
+      plural: panels
+    - id: column
+      kind: Column
+      apiVersion: widgets.templates.krateo.io/v1beta1
+      plural: columns
+
+  relationships:
+    # if at least one Panel or Column references this Button, then it's not orphaned
+    matchNone:
+      - with: panel
+        type: custom
+        criteria:
+          - targetPath: "metadata.name"
+            dependencyPath: "spec.resourcesRefs.items[*].name"
+            operator: EQUALS
+          - targetPath: "metadata.namespace"
+            dependencyPath: "spec.resourcesRefs.items[*].namespace"
+            operator: EQUALS
+      - with: column
+        type: custom
+        criteria:
+          - targetPath: "metadata.name"
+            dependencyPath: "spec.resourcesRefs.items[*].name"
+            operator: EQUALS
+          - targetPath: "metadata.namespace"
+            dependencyPath: "spec.resourcesRefs.items[*].namespace"
+            operator: EQUALS
